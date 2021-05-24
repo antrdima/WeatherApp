@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">WeatherPrototype</string>
+    <string name="authorize_email_hint">Электронная почта</string>
+    <string name="authorize_password_hint">Пароль</string>
+    <string name="authorize_label">Авторизация</string>
+    <string name="authorize_button_label">Войти</string>
+
+    <string name="permission_denied">Права на определение положения не были предоставлены</string>
+    <string name="msg_login_success">валидные</string>
+    <string name="msg_email_invalid">Пожалуйста, введите правильный email</string>
+    <string name="msg_password_invalid">Пароль-минимум 6 символов, должен обязательно содержать минимум 1 строчную букву, 1 заглавную, и 1 цифру</string>
+</resources>
