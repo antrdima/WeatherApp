@@ -7,9 +7,9 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.example.weatherprototype.BuildConfig
-import org.example.weatherprototype.data.api.ApiHelper
-import org.example.weatherprototype.data.api.ApiHelperImpl
-import org.example.weatherprototype.data.api.ApiService
+import org.example.weatherprototype.data.api.WeatherApi
+import org.example.weatherprototype.network.AuthInterceptor
+import org.example.weatherprototype.network.connection.NetworkConnectionInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
@@ -17,22 +17,31 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class ApplicationModule {
+    @Provides
+    fun provideBaseUrl() = "https://api.openweathermap.org/data/2.5/"
 
     @Provides
-    fun provideBaseUrl() = "myUrl"
+    fun getHttpLoggingInterceptor(): HttpLoggingInterceptor {
+        val httpLoggingInterceptor = HttpLoggingInterceptor()
+        if (BuildConfig.DEBUG) {
+            httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+        } else {
+            httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.NONE
+        }
+        return httpLoggingInterceptor
+    }
 
     @Provides
     @Singleton
-    fun provideOkHttpClient() = if (BuildConfig.DEBUG) {
-        val loggingInterceptor = HttpLoggingInterceptor()
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-        OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
-            .build()
-    } else OkHttpClient
-        .Builder()
+    fun provideOkHttpClient(
+        authInterceptor: AuthInterceptor,
+        httpLoggingInterceptor: HttpLoggingInterceptor,
+        networkConnectionInterceptor: NetworkConnectionInterceptor
+    ) = OkHttpClient.Builder()
+        .addInterceptor(httpLoggingInterceptor)
+        .addInterceptor(authInterceptor)
+        .addInterceptor(networkConnectionInterceptor)
         .build()
-
 
     @Provides
     @Singleton
@@ -48,10 +57,5 @@ class ApplicationModule {
 
     @Provides
     @Singleton
-    fun provideApiService(retrofit: Retrofit): ApiService = retrofit.create(ApiService::class.java)
-
-    @Provides
-    @Singleton
-    fun provideApiHelper(apiHelper: ApiHelperImpl): ApiHelper = apiHelper
-
+    fun provideApiService(retrofit: Retrofit): WeatherApi = retrofit.create(WeatherApi::class.java)
 }

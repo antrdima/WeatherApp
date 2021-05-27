@@ -5,6 +5,8 @@
     <string name="authorize_label">Авторизация</string>
     <string name="authorize_button_label">Войти</string>
 
+    <string name="error_no_connection">Пожалуйста, проверьте интернет соединение</string>
+    <string name="weather_api_error">Ошибка сервиса погода. Пожалуйста, попробуйте позднее</string>
     <string name="permission_denied">Права на определение положения не были предоставлены</string>
     <string name="msg_login_success">валидные</string>
     <string name="msg_email_invalid">Пожалуйста, введите правильный email</string>

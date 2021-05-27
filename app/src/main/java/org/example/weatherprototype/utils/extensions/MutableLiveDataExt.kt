@@ -1,6 +1,7 @@
-package org.example.weatherprototype.utils
+package org.example.weatherprototype.utils.extensions
 
 import androidx.lifecycle.MutableLiveData
+import org.example.weatherprototype.utils.Event
 
 fun MutableLiveData<Event<Unit>>.postEvent() {
     this.postValue(Event(Unit))

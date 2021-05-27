@@ -11,6 +11,7 @@ import android.os.Looper
 import android.provider.Settings
 import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
@@ -39,12 +40,20 @@ class AuthorizeActivity : AppCompatActivity() {
     }
 
     private fun setupObservers() {
-        viewModel.showInvalidEmailError.observe(this,
-            EventObserver { showEmailInvalidSnackbar() })
+        viewModel.showSnackbarMessageId.observe(this,
+            EventObserver { showSnackbar(it) })
+        viewModel.showSnackbarMessage.observe(this,
+            EventObserver { showSnackbar(it) })
         viewModel.showInvalidPasswordError.observe(this,
             EventObserver { showPasswordInvalidSnackbar() })
-        viewModel.showLoginSuccess.observe(this,
-            EventObserver { showLoginSuccessSnackbar() })
+    }
+
+    private fun showSnackbar(message: String) {
+        Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
+    }
+
+    private fun showSnackbar(@StringRes stringId: Int) {
+        Snackbar.make(binding.root, stringId, Snackbar.LENGTH_LONG).show()
     }
 
     private fun setupListeners() {
@@ -52,21 +61,11 @@ class AuthorizeActivity : AppCompatActivity() {
             showPasswordInvalidSnackbar()
         }
     }
-
-    private fun showLoginSuccessSnackbar() {
-        Snackbar.make(binding.root, R.string.msg_login_success, Snackbar.LENGTH_LONG)
-            .show()
-    }
-
-    private fun showEmailInvalidSnackbar() {
-        Snackbar.make(binding.root, R.string.msg_email_invalid, Snackbar.LENGTH_LONG)
-            .show()
-    }
-
     private fun showPasswordInvalidSnackbar() {
         Snackbar.make(binding.root, R.string.msg_password_invalid, Snackbar.LENGTH_LONG)
             .apply {
-                view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text).maxLines = 4
+                view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text).maxLines =
+                    4
             }
             .show()
     }
